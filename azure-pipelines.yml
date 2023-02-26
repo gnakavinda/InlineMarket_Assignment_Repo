@@ -31,7 +31,7 @@ stages:
           azureSubscription: 'VisolitDev-SC'
           appType: 'webApp'
           appName: 'HelloWorldWebApp-Staging'
-          package: '$(System.DefaultWorkingDirectory)/{artifact-name}/**/*.zip'
+          package: '$(System.DefaultWorkingDirectory)/**/*.zip'
           deploymentMethod: 'auto'
 
 - stage: Production
