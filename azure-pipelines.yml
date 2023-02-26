@@ -18,20 +18,14 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '1dcff0be-8fbc-48e2-86bc-82596f04254a'
-          definition: '14'
-          buildVersionToDownload: 'latest'
-          artifactName: 'Drop'
-          targetPath: '$(Pipeline.Workspace)'
+      - download: current
+        artifact: MyArtifact
       - task: AzureWebApp@1
         inputs:
           azureSubscription: 'VisolitDev-SC'
           appType: 'webApp'
           appName: 'HelloWorldWebApp-Staging'
-          package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+          package: '$(Pipeline.Workspace)/MyArtifact/drop/*.zip'
           deploymentMethod: 'auto'
 
 - stage: Production
