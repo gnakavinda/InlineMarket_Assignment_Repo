@@ -4,7 +4,7 @@ variables:
 trigger:
   branches:
     include:
-    - Developer
+    - Main
 name: $(date:yyyyMMdd)$(rev:.r)
 resources:
   repositories:
