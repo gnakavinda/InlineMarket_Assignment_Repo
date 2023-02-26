@@ -1,16 +1,43 @@
+# File: azure-pipelines.yml
+
 trigger:
-- main
+- none
 
 pool:
-  vmImage: ubuntu-latest
-jobs:
-- job: DeployStaging
-  displayName: 'Deploy Staging'
-  steps:
-  - task: AzureRmWebAppDeployment@4
-    inputs:
-      ConnectionType: 'AzureRM'
-      azureSubscription: 'VisolitDev-SC'
-      appType: 'webApp'
-      WebAppName: 'HelloWorldWebApp-Staging'
-      packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+- stage: Staging
+  displayName: 'Deploy to Staging'
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy to Staging'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'VisolitDev-SC'
+        appType: 'webApp'
+        appName: 'HelloWorldWebApp-Staging'
+        package: '$(System.DefaultWorkingDirectory)/{artifact-name}/**/*.zip'
+        deploymentMethod: 'auto'
+
+- stage: Production
+  displayName: 'Deploy to Production'
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy to Production'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'VisolitDev-SC'
+        appType: 'webApp'
+        appName: 'HelloWorldWebApp-Production'
+        package: '$(System.DefaultWorkingDirectory)/{artifact-name}/**/*.zip'
+        deploymentMethod: 'auto'
