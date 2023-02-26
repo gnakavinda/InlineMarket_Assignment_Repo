@@ -1,0 +1,16 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+jobs:
+- job: DeployStaging
+  displayName: 'Deploy Staging'
+  steps:
+  - task: AzureRmWebAppDeployment@4
+    inputs:
+      ConnectionType: 'AzureRM'
+      azureSubscription: 'VisolitDev-SC'
+      appType: 'webApp'
+      WebAppName: 'HelloWorldWebApp-Staging'
+      packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
