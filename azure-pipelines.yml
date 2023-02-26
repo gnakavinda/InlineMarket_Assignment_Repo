@@ -19,7 +19,7 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
       - download: current
-        artifact: MyArtifact
+        artifact: Drop
       - task: AzureWebApp@1
         inputs:
           azureSubscription: 'VisolitDev-SC'
