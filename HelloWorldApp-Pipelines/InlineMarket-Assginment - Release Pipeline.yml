@@ -1,0 +1,42 @@
+trigger:
+  none
+
+variables:
+  WebSiteName: 'AzureTestProject'
+
+resources:
+  pipelines:
+      - pipeline: 'buildPipeline'
+        project: InlineMarket-Assginment
+        source: 'InlineMarket-Assginment - Build Pipeline'
+        branch: 'Developer'
+
+stages:
+    - stage: DeployWebsite
+      displayName: 'Deploy Website'
+      pool:
+        vmImage: windows-latest
+
+      jobs:
+      - deployment: DeployWebsite
+        displayName: 'Deploy website'
+        environment: 'Windows 11 Server.ADNO-R90SA3QG'
+        strategy:
+         runOnce:
+              deploy:
+                  steps:
+                      - checkout: none
+                      - download: 'buildPipeline'
+                        name: 'DownloadBuildArtifacts'
+                        displayName: 'Download Build Artifacts'
+                        artifact: 'AzureTestProject'
+
+                      - task: AzureRmWebAppDeployment@4
+                        name: AddAppService
+                        displayName: Add App Service
+                        inputs:
+                          ConnectionType: 'AzureRM'
+                          azureSubscription: 'VisolitDev-SC'
+                          appType: 'webApp'
+                          WebAppName: 'HelloKavinda'
+                          packageForLinux: '${{ variables.WebSiteName }}'
