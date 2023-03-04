@@ -1,0 +1,45 @@
+# File: azure-pipelines.yml
+
+trigger:
+- none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+- stage: Staging
+  displayName: 'Deploy to Staging'
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy to Staging'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - download: current
+        artifact: Drop
+      - task: AzureWebApp@1
+        inputs:
+          azureSubscription: 'VisolitDev-SC'
+          appType: 'webApp'
+          appName: 'HelloWorldWebApp-Staging'
+          package: '$(Pipeline.Workspace)/MyArtifact/drop/*.zip'
+          deploymentMethod: 'auto'
+
+- stage: Production
+  displayName: 'Deploy to Production'
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy to Production'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'VisolitDev-SC'
+        appType: 'webApp'
+        appName: 'HelloWorldWebApp-Production'
+        package: '$(System.DefaultWorkingDirectory)/*.zip'
+        deploymentMethod: 'auto'
